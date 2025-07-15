@@ -6,17 +6,26 @@
     <title>User Management</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: "Helvetica Neue", sans-serif;
+            margin: 0;
             text-align: center;
+            background: linear-gradient(to right, #ffffff, #daf9fa);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
-            max-width: 600px;
+            background-color: #ffffff;
+            max-width: 400px;
+            width: 100%;
             margin: 0 auto;
             border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: 0 8 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
         }
         h1 {
             color: #333;
@@ -25,24 +34,61 @@
             margin: 20px 0;
         }
         input {
-            padding: 10px;
-            margin: 5px 0;
+            padding: 12px;
+            margin: 8px 0;
             width: 80%;
-            font-size: 16px;
+            font-size: 15px;
+            border : 1px solid #ccc;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        input:focus {
+          outline: none;
+          border-color: #00c6ff;
+          box-shadow: 0 0 5px rgba(0, 198, 255, 0.4);
         }
         button {
+            width: 87%;
             padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
+            margin-top: 10px;
+            font-size: 15px;
             cursor: pointer;
+            background-color: #00c6ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+
         }
+        button:hover {
+          background-color: #007acc;
+        }
+
         .section {
             margin-bottom: 30px;
+        }
+        #logged-in-screen h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+
+        }
+        #delete-section button {
+            background-color: #ff4d4d;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            width: 80%;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
     </style>
 </head>
 <body>
     <div class="container" id="login-screen">
+        <img src="ybigta_logo.png" alt="YBIGTA Logo" style="width: 80px;">
         <h1>User Management</h1>
         <div class="section" id="login-section">
             <h2>Login</h2>
