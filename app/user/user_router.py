@@ -33,7 +33,7 @@ def register_user(user: User, service: UserService = Depends(get_user_service)) 
         BaseResponse[User]: 회원가입 성공 시 사용자 정보 반환
     """
     try:
-        new_user = service.register(user)
+        new_user = service.register_user(user)
         return BaseResponse(status="success", data=new_user, message="User registeration success.")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -56,7 +56,7 @@ def delete_user(user_delete_request: UserDeleteRequest, service: UserService = D
         BaseResponse[User]: 삭제된 사용자의 정보를 반환
     """
     try:
-        deleted_user = service.delete(user_delete_request)
+        deleted_user = service.delete_user(user_delete_request.email)
         return BaseResponse(status="success", data=deleted_user, message="User Deletion Success.")
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -79,7 +79,7 @@ def update_user_password(user_update: UserUpdate, service: UserService = Depends
         BaseResponse[User]: 비밀번호 변경 성공 시 사용자 정보 반환
     """
     try:
-        updated_user = service.update_password(user_update)
+        updated_user = service.update_user_pwd(user_update)
         return BaseResponse(status="success", data=updated_user, message="User password update success.")
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
