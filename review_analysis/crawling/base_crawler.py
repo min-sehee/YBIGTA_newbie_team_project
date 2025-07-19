@@ -19,3 +19,17 @@ class BaseCrawler(ABC):
     def save_to_database(self):
         pass
 ############################
+
+# 변수명은 review, rating, date로 통일
+
+class KyoboCrawler(BaseCrawler):
+    def __init__(self, output_dir: str):
+        self.output_dir = output_dir
+
+class Yes24Crawler(BaseCrawler):
+    def __init__(self, output_dir: str):
+        self.output_dir = output_dir
+
+class AladinCrawler(BaseCrawler):
+    def __init__(self, output_dir: str):
+        self.output_dir = output_dir
