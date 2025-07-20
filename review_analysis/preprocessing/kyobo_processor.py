@@ -32,7 +32,7 @@ class KyoboProcessor(BaseDataProcessor):
         self.df = pd.read_csv(self.input_path)
         self.df.dropna(subset=['rating', 'review', 'date'], inplace=True)
         self.df['rating'] = pd.to_numeric(self.df['rating'], errors='coerce')
-        self.df = self.df[(self.df['rating'] >= 1) & (self.df['rating'] <= 5)]
+        self.df = self.df[(self.df['rating'] >= 1) & (self.df['rating'] <= 4)]
         self.df['date'] = pd.to_datetime(self.df['date'], errors='coerce')
         self.df.dropna(subset=['date'], inplace=True)
         self.df['review'] = self.df['review'].astype(str)
