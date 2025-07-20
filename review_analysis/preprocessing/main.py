@@ -9,7 +9,7 @@ from review_analysis.preprocessing.aladin_preprocessor import AladinProcessor
 PREPROCESS_CLASSES: Dict[str, Type[BaseDataProcessor]] = {
     # csv basename : 전처리 클래스(클래스명을 대문자로 적기)
     "reviews_aladin": AladinProcessor,
-    "reviews_kyobo": kyoboProcessor,
+    "reviews_kyobo": KyoboProcessor,
     "reviews_yes24": Yes24Processor,
     # "reviews_example": ExampleProcessor,
 }
