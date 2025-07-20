@@ -7,8 +7,6 @@ from review_analysis.preprocessing.kyobo_processor import KyoboProcessor
 from review_analysis.preprocessing.yes24_processor import Yes24Processor
 from review_analysis.preprocessing.aladin_processor import AladinProcessor
 
-# 모든 preprocessing 클래스를 예시 형식으로 적어주세요. 
-# key는 "reviews_사이트이름"으로, value는 해당 처리를 위한 클래스
 PREPROCESS_CLASSES: Dict[str, Type[BaseDataProcessor]] = {
     # csv basename : 전처리 클래스(클래스명을 대문자로 적기)
     "reviews_aladin": AladinProcessor,

@@ -33,7 +33,7 @@ class KyoboProcessor(BaseDataProcessor):
         self.df.dropna(subset=['rating', 'review', 'date'], inplace=True)
         self.df['rating'] = pd.to_numeric(self.df['rating'], errors='coerce')
         self.df = self.df[(self.df['rating'] >= 1) & (self.df['rating'] <= 4)]
-        self.df['date'] = pd.to_datetime(self.df['date'], errors='coerce')
+        self.df['date'] = pd.to_datetime(self.df['date'], format="%Y.%m.%d", errors='coerce')
         self.df.dropna(subset=['date'], inplace=True)
         self.df['review'] = self.df['review'].astype(str)
         self.df['clean_review'] = self.df['review'].str.replace(r'[^\x00-\x7F\uAC00-\uD7A3\w\s]', '', regex=True)
