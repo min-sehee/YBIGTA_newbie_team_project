@@ -34,6 +34,16 @@ import os
 import re
 
 class KyoboCrawler(BaseCrawler):
+
+    """
+    교보문고 웹사이트에서 도서 리뷰를 크롤링하는 크롤러 클래스
+
+    Attributes:
+        base_url (str): 크롤링 대상 도서의 URL
+        reviews (List[list[str | float]]): 수집한 리뷰, 평점, 날짜를 저장하는 리스트
+        logger (logging.Logger): 로깅을 위한 로거 객체
+    """
+
     def __init__(self, output_dir: str):
         super().__init__(output_dir)
         self.base_url = 'https://product.kyobobook.co.kr/detail/S000000610612'
@@ -41,6 +51,9 @@ class KyoboCrawler(BaseCrawler):
         self.reviews: List[list[str | float]] = []
 
     def start_browser(self) -> None:
+        """
+        크롬 브라우저를 실행하는 메소드
+        """
         
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
@@ -53,7 +66,14 @@ class KyoboCrawler(BaseCrawler):
 
         self.logger.info("브라우저 실행 완료")
 
-    def scrape_reviews(self):
+    def scrape_reviews(self) -> None:
+        """
+        교보문고 리뷰 페이지에서 리뷰 텍스트, 평점, 날짜를 수집하는 메소드
+
+        - 각 리뷰는 (리뷰 내용, 평점, 날짜)의 형태로 self.reviews에 저장됨
+        - 10페이지 단위로 진행 로그를 출력하고, 마지막 페이지에 도달하면 종료됨
+        - 리뷰에 포함된 이모지 및 일부 특수 문자는 제거됨
+        """
 
         self.start_browser()
 
@@ -135,7 +155,10 @@ class KyoboCrawler(BaseCrawler):
                 self.logger.warning(f"페이지 넘기기 실패: {e}")
                 break
 
-    def save_to_database(self):
+    def save_to_database(self) -> None:
+        """
+        스크랩한 리뷰를 csv 파일로 저장하는 메소드
+        """
 
         file_path = os.path.join(self.output_dir, 'reviews_kyobo.csv')
 
