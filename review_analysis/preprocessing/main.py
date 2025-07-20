@@ -4,6 +4,8 @@ from argparse import ArgumentParser
 from typing import Dict, Type
 from review_analysis.preprocessing.base_processor import BaseDataProcessor
 from review_analysis.preprocessing.aladin_preprocessor import AladinProcessor
+from review_analysis.preprocessing.aladin_preprocessor import KyoboProcessor
+from review_analysis.preprocessing.aladin_preprocessor import Yes24Processor
 # 필요시 추가: from review_analysis.preprocessing.example_processor import ExampleProcessor
 
 PREPROCESS_CLASSES: Dict[str, Type[BaseDataProcessor]] = {
