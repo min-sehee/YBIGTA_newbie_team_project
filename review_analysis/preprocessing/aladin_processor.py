@@ -26,11 +26,27 @@ from review_analysis.preprocessing.base_processor import BaseDataProcessor
 
 class AladinProcessor(BaseDataProcessor):
     def __init__(self, input_path: str, output_path: str):
+        """
+        AladinProcessor 클래스의 초기화 함수.
+
+        Args:
+            input_path (str): 전처리할 CSV 파일 경로
+            output_path (str): 전처리 결과를 저장할 디렉토리 경로
+        """
         super().__init__(input_path, output_path)
         self.df = None
         self.okt = Okt()
 
     def preprocess(self):
+        """
+        리뷰 데이터를 전처리하는 메소드
+
+        - 결측치 및 이상치 제거
+        - 날짜 및 평점 형 변환
+        - 리뷰 텍스트 정제 및 불용어 제거
+        - 형태소 분석을 통한 토큰화 수행
+        - 너무 짧거나 긴 리뷰 제거
+        """
 
         print("알라딘 데이터 전처리 시작")
         self.df = pd.read_csv(self.input_path)
@@ -65,12 +81,21 @@ class AladinProcessor(BaseDataProcessor):
         print(f"✅ 전처리 완료: {len(self.df)} rows")
 
     def feature_engineering(self):
+        """
+        전처리된 텍스트 데이터에서 추가 feature를 생성하는 메소드
+
+        - 연/월 단위로 날짜 파생 feature 생성
+        - TF-IDF 벡터화를 통해 텍스트 특징 추출
+        """
         self.df['year_month'] = self.df['date'].dt.to_period('M').astype(str)
         vectorizer = TfidfVectorizer(max_features=100)
         tfidf_matrix = vectorizer.fit_transform(self.df['clean_review'])
         print("✅ feature engineering 완료 / TF-IDF shape:", tfidf_matrix.shape)
 
     def save_to_database(self):
+        """
+        전처리 맟 FE된 데이터를 저장하는 메소드
+        """
         self.df = self.df[['review', 'clean_review', 'rating', 'date', 'year_month']]
         os.makedirs(self.output_dir, exist_ok=True)
         save_path = os.path.join(self.output_dir, 'preprocessed_reviews_aladin.csv')
