@@ -75,16 +75,6 @@ def review_eda(file_path,
     plt.xlabel('별점')
     plt.ylabel('개수')
     plt.show()
-        # --- 별점 이상치 시각화 ---
-    plt.figure(figsize=(8, 5))
-    rating_counts = df['rating'].value_counts().sort_index()
-    colors = ['red' if (r < rating_min or r > rating_max) else 'skyblue' for r in rating_counts.index]
-    sns.barplot(x=rating_counts.index, y=rating_counts.values, palette=colors)
-    plt.title(f'{shop_key} - 별점 이상치 파악(이상치는 RED로, 정상은 BLUE)')
-    plt.xlabel('별점')
-    plt.ylabel('개수')
-    plt.tight_layout()
-    plt.show()
 
     print("텍스트 길이 분포:")
     sns.histplot(df['review_len'], bins=30, kde=True)
@@ -100,6 +90,44 @@ def review_eda(file_path,
     plt.ylabel('개수')
     plt.show()
 
+    # 2. 이상치 파악
+    print(f"\n[이상치 탐색]")
+    # 별점 이상치
+    out_rating = df[~df['rating'].between(rating_min, rating_max, inclusive='both')]
+    print(f"별점 이상치 개수: {len(out_rating)}")
+    if len(out_rating) > 0:
+        print(out_rating[['review','rating','date']].head())
+    plt.figure(figsize=(8, 5))
+    rating_counts = df['rating'].value_counts().sort_index()
+    colors = ['red' if (r < rating_min or r > rating_max) else 'skyblue' for r in rating_counts.index]
+    sns.barplot(x=rating_counts.index, y=rating_counts.values, palette=colors)
+    plt.title(f'{shop_key} - 별점 이상치 파악(이상치는 RED로, 정상은 BLUE)')
+    plt.xlabel('별점')
+    plt.ylabel('개수')
+    plt.tight_layout()
+    plt.show()
+
+    # 리뷰 길이 이상치
+    out_short = df[df['review_len'] < reviewlen_short]
+    out_long = df[df['review_len'] > reviewlen_long]
+    print(f"너무 짧은 리뷰 개수: {len(out_short)} 예시:")
+    print(out_short[['review','review_len']].head())
+    print(f"너무 긴 리뷰 개수: {len(out_long)} 예시:")
+    print(out_long[['review','review_len']].head())
+    sns.boxplot(y=df['review_len'])
+    plt.title(f'{shop_key} - 리뷰 길이 이상치 파악')
+    plt.ylabel('리뷰 길이')
+    plt.show()
+
+    # 날짜 이상치
+    today = pd.Timestamp(datetime.today().date())
+    out_past = df[(df['date'] < f'{min_year}-01-01') & (df['date'].notnull())]
+    out_future = df[(df['date'] > today) & (df['date'].notnull())]
+    print(f"과거 날짜 이상치({min_year}년 이전): {len(out_past)}")
+    print(out_past[['review','date']].head())
+    print(f"미래 날짜 이상치(오늘 이후): {len(out_future)}")
+    print(out_future[['review','date']].head())
+    
     # --- 날짜 이상치 시각화를 연-월별 막대그래프로! ---
     df['year_month'] = df['date'].dt.to_period('M').astype(str)
     count_by_ym = df.groupby('year_month').size().reset_index(name='count')
@@ -112,36 +140,6 @@ def review_eda(file_path,
     plt.tight_layout()
     plt.show()
 
-    # 2. 이상치 파악
-    print(f"\n[이상치 탐색]")
-    # 별점 이상치
-    out_rating = df[~df['rating'].between(rating_min, rating_max, inclusive='both')]
-    print(f"별점 이상치 개수: {len(out_rating)}")
-    if len(out_rating) > 0:
-        print(out_rating[['review','rating','date']].head())
-
-    # 리뷰 길이 이상치
-    out_short = df[df['review_len'] < reviewlen_short]
-    out_long = df[df['review_len'] > reviewlen_long]
-    print(f"너무 짧은 리뷰 개수: {len(out_short)} 예시:")
-    print(out_short[['review','review_len']].head())
-    print(f"너무 긴 리뷰 개수: {len(out_long)} 예시:")
-    print(out_long[['review','review_len']].head())
-
-    # 날짜 이상치
-    today = pd.Timestamp(datetime.today().date())
-    out_past = df[(df['date'] < f'{min_year}-01-01') & (df['date'].notnull())]
-    out_future = df[(df['date'] > today) & (df['date'].notnull())]
-    print(f"과거 날짜 이상치({min_year}년 이전): {len(out_past)}")
-    print(out_past[['review','date']].head())
-    print(f"미래 날짜 이상치(오늘 이후): {len(out_future)}")
-    print(out_future[['review','date']].head())
-
-    # 박스플롯
-    sns.boxplot(y=df['review_len'])
-    plt.title(f'{shop_key} - 리뷰 길이 이상치 파악')
-    plt.ylabel('리뷰 길이')
-    plt.show()
 
 # 실행 예시
 review_eda('database/reviews_aladin.csv')
