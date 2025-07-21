@@ -33,19 +33,19 @@ except:
     pass
 plt.rcParams['axes.unicode_minus'] = False
 
-# 3. 통합 EDA/이상치 탐색 함수
+# 3. 통합 EDA/이상치 탐색 함수 (연-월별 날짜 시각화 포함)
 def review_eda(file_path,
                rating_min=1, rating_max=5,
                reviewlen_short=10, reviewlen_long=500,
                min_year=2010):
     """
-    file_path : 리뷰 csv 경로 
+    file_path : 리뷰 csv 경로
     rating_min, rating_max: 별점 정상 범위 지정(예: 1~5)
     reviewlen_short: 너무 짧은 리뷰 간주 최소 글자수(미만시 이상치)
     reviewlen_long: 너무 긴 리뷰 간주 최대 글자수(초과시 이상치)
     min_year: 과거이상치 판단 기준(예: 2010년 이전)
     """
-    # ----◆ 서점명 자동 추출 (파일명, 확장자 제거) ◆----
+    # 서점명 자동 추출
     base = os.path.basename(file_path).lower()
     shop_key = None
     if 'aladin' in base:
@@ -55,10 +55,10 @@ def review_eda(file_path,
     elif 'yes24' in base:
         shop_key = '예스24'
     else:
-        shop_key = os.path.splitext(base)[0]  # fallback: 파일명
+        shop_key = os.path.splitext(base)[0]
 
     df = pd.read_csv(file_path)
-    for col in ['review','rating','date']:
+    for col in ['review', 'rating', 'date']:
         if col not in df.columns:
             raise ValueError(f"{col} 컬럼이 존재하지 않습니다. 파일 헤더를 확인해 주세요.")
 
@@ -86,6 +86,18 @@ def review_eda(file_path,
     plt.xlabel('날짜')
     plt.show()
 
+    # --- 날짜 이상치 시각화를 연-월별 막대그래프로! ---
+    df['year_month'] = df['date'].dt.to_period('M').astype(str)
+    count_by_ym = df.groupby('year_month').size().reset_index(name='count')
+    plt.figure(figsize=(16, 6))
+    sns.barplot(data=count_by_ym, x='year_month', y='count', color='skyblue')
+    plt.xticks(rotation=45)
+    plt.title(f'{shop_key} - 연-월별 리뷰 개수')
+    plt.xlabel('연-월')
+    plt.ylabel('리뷰 개수')
+    plt.tight_layout()
+    plt.show()
+
     # 2. 이상치 파악
     print(f"\n[이상치 탐색]")
     # 별점 이상치
@@ -111,7 +123,13 @@ def review_eda(file_path,
     print(f"미래 날짜 이상치(오늘 이후): {len(out_future)}")
     print(out_future[['review','date']].head())
 
-# -----------------------
+    # 박스플롯
+    sns.boxplot(y=df['review_len'])
+    plt.title(f'{shop_key} - 리뷰 길이 박스플롯')
+    plt.ylabel('리뷰 길이')
+    plt.show()
+
+# 실행 예시
 review_eda('database/reviews_aladin.csv')
 # review_eda('database/reviews_kyobo.csv')
 # review_eda('database/reviews_yes24.csv')
