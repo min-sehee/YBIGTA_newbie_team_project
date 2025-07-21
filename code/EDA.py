@@ -145,16 +145,3 @@ def review_eda(file_path,
 review_eda('database/reviews_aladin.csv')
 # review_eda('database/reviews_kyobo.csv')
 # review_eda('database/reviews_yes24.csv')
-
-# 이상치만 시각화
-outliers = pd.concat([out_past, out_future])
-outliers['year_month'] = outliers['date'].dt.to_period('M').astype(str)
-outlier_counts = outliers.groupby('year_month').size().reset_index(name='count')
-
-plt.figure(figsize=(10, 4))
-sns.barplot(data=outlier_counts, x='year_month', y='count', color='salmon')
-plt.title(f'{shop_key} - 날짜 이상치만 연월별로 시각화')
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
-
