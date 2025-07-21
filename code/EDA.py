@@ -73,6 +73,16 @@ def review_eda(file_path,
     sns.countplot(x='rating', data=df)
     plt.title(f'{shop_key} - 별점 분포')
     plt.show()
+        # --- 별점 이상치 시각화 ---
+    plt.figure(figsize=(8, 5))
+    rating_counts = df['rating'].value_counts().sort_index()
+    colors = ['red' if (r < rating_min or r > rating_max) else 'skyblue' for r in rating_counts.index]
+    sns.barplot(x=rating_counts.index, y=rating_counts.values, palette=colors)
+    plt.title(f'{shop_key} - 별점 분포 (이상치 강조)')
+    plt.xlabel('별점')
+    plt.ylabel('개수')
+    plt.tight_layout()
+    plt.show()
 
     print("텍스트 길이 분포:")
     sns.histplot(df['review_len'], bins=30, kde=True)
