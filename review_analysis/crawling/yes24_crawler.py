@@ -28,7 +28,7 @@ class Yes24Crawler(BaseCrawler):
         self.base_url = 'https://www.yes24.com/product/goods/13137546'
         self.goods_id = '13137546'
         self.max_page = 328
-        self.reviews = []
+        self.reviews: list[list[str]] = [] 
         self.driver = None
         self.logger = setup_logger('yes24_crawler.log')
         self.output_path = os.path.join(self.output_dir, 'reviews_yes24.csv')
