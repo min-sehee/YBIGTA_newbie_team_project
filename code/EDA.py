@@ -90,68 +90,17 @@ def review_eda(file_path,
     plt.ylabel('개수')
     plt.show()
 
-    # 2. 이상치 파악
-    print(f"\n[이상치 탐색]")
-    # 별점 이상치
-    out_rating = df[~df['rating'].between(rating_min, rating_max, inclusive='both')]
-    print(f"별점 이상치 개수: {len(out_rating)}")
-    if len(out_rating) > 0:
-        print(out_rating[['review','rating','date']].head())
-    plt.figure(figsize=(8, 5))
-    rating_counts = df['rating'].value_counts().sort_index()
-    colors = ['red' if (r < rating_min or r > rating_max) else 'skyblue' for r in rating_counts.index]
-    sns.barplot(x=rating_counts.index, y=rating_counts.values, palette=colors)
-    plt.title(f'{shop_key} - 별점 이상치 파악(이상치는 RED로, 정상은 BLUE)')
-    plt.xlabel('별점')
-    plt.ylabel('개수')
-    plt.tight_layout()
-    plt.show()
+def visualize_outliers(input_data, rating_min=1, rating_max=5, reviewlen_short=10, reviewlen_long=500, min_year=2010):
+    # 파일 경로로 전달된 경우 자동 로드
+    if isinstance(input_data, str):
+        df = pd.read_csv(input_data)
+    else:
+        df = input_data.copy()
 
-    # 리뷰 길이 이상치
-    out_short = df[df['review_len'] < reviewlen_short]
-    out_long = df[df['review_len'] > reviewlen_long]
-    print(f"너무 짧은 리뷰 개수: {len(out_short)} 예시:")
-    print(out_short[['review','review_len']].head())
-    print(f"너무 긴 리뷰 개수: {len(out_long)} 예시:")
-    print(out_long[['review','review_len']].head())
-    sns.boxplot(y=df['review_len'])
-    plt.title(f'{shop_key} - 리뷰 길이 이상치 파악')
-    plt.ylabel('리뷰 길이')
-    plt.show()
-
-    # 날짜 이상치
-    today = pd.Timestamp(datetime.today().date())
-    out_past = df[(df['date'] < f'{min_year}-01-01') & (df['date'].notnull())]
-    out_future = df[(df['date'] > today) & (df['date'].notnull())]
-    print(f"과거 날짜 이상치({min_year}년 이전): {len(out_past)}")
-    print(out_past[['review','date']].head())
-    print(f"미래 날짜 이상치(오늘 이후): {len(out_future)}")
-    print(out_future[['review','date']].head())
-    
-    # --- 날짜 이상치 시각화를 연-월별 막대그래프로! ---
-    df['year_month'] = df['date'].dt.to_period('M').astype(str)
-    count_by_ym = df.groupby('year_month').size().reset_index(name='count')
-    plt.figure(figsize=(16, 6))
-    sns.barplot(data=count_by_ym, x='year_month', y='count', color='skyblue')
-    plt.xticks(rotation=45)
-    plt.title(f'{shop_key} - 날짜 이상치 파악')
-    plt.xlabel('연-월')
-    plt.ylabel('개수')
-    plt.tight_layout()
-    plt.show()
-
-
-# 실행 예시
-review_eda('database/reviews_aladin.csv')
-# review_eda('database/reviews_kyobo.csv')
-# review_eda('database/reviews_yes24.csv')
-
-
-def visualize_outliers(df, rating_min=1, rating_max=5, reviewlen_short=10, reviewlen_long=500, min_year=2010):
-    # 전처리
     df['review_len'] = df['review'].apply(len)
     df['rating'] = pd.to_numeric(df['rating'], errors='coerce')
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
+
     # 이상치 추출
     out_rating = df[~df['rating'].between(rating_min, rating_max, inclusive='both')]
     out_short = df[df['review_len'] < reviewlen_short]
@@ -159,11 +108,14 @@ def visualize_outliers(df, rating_min=1, rating_max=5, reviewlen_short=10, revie
     today = pd.Timestamp(datetime.today().date())
     out_past = df[(df['date'] < f'{min_year}-01-01') & (df['date'].notnull())]
     out_future = df[(df['date'] > today) & (df['date'].notnull())]
-    # 시각화
+
+    # 시각화 라이브러리 임포트
     import matplotlib.pyplot as plt
     import seaborn as sns
 
     plt.figure(figsize=(12, 8))
+    
+    # 1. 별점 이상치 시각화
     plt.subplot(221)
     rating_counts = df['rating'].value_counts().sort_index()
     colors = ['red' if (r < rating_min or r > rating_max) else 'skyblue' for r in rating_counts.index]
@@ -172,11 +124,13 @@ def visualize_outliers(df, rating_min=1, rating_max=5, reviewlen_short=10, revie
     plt.xlabel('별점')
     plt.ylabel('개수')
 
+    # 2. 리뷰 길이 이상치 시각화
     plt.subplot(222)
     sns.boxplot(y=df['review_len'])
     plt.title('리뷰 길이 이상치 (상자 밖 점)')
     plt.ylabel('리뷰 길이')
 
+    # 3. 전체 날짜 분포 시각화
     plt.subplot(223)
     dates = df['date'].dropna()
     sns.histplot(dates, bins=30, color='skyblue')
@@ -184,6 +138,7 @@ def visualize_outliers(df, rating_min=1, rating_max=5, reviewlen_short=10, revie
     plt.xlabel('날짜')
     plt.ylabel('개수')
 
+    # 4. 날짜 이상치(과거/미래) 연-월별 시각화
     plt.subplot(224)
     outliers = pd.concat([out_past, out_future])
     outliers['year_month'] = outliers['date'].dt.to_period('M').astype(str)
@@ -194,3 +149,11 @@ def visualize_outliers(df, rating_min=1, rating_max=5, reviewlen_short=10, revie
 
     plt.tight_layout()
     plt.show()
+
+# 실행 예시
+review_eda('database/reviews_aladin.csv')
+# review_eda('database/reviews_kyobo.csv')
+# review_eda('database/reviews_yes24.csv')
+visualize_outliers('database/reviews_aladin.csv')
+#visualize_outliers('database/reviews_kyobo.csv')
+#visualize_outliers('database/reviews_yes24.csv')
