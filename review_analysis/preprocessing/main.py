@@ -55,4 +55,4 @@ if __name__ == "__main__":
         if not found:
             raise FileNotFoundError(f"해당 csv 파일({base_name}.csv)을 찾을 수 없습니다.")
     else:
-        raise ValueError("No preprocessors selected. '-a' 또는 '-c [key]' 옵션을 사용하세요.")
+        raise ValueError("No preocessors selected. '-a' 또는 '-c [key]' 옵션을 사용하세요.")
