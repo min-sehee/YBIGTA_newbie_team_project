@@ -41,7 +41,7 @@ def tokenize_korean_nouns(texts):
         tokenized.append(' '.join(nouns))
     return tokenized
 
-# 서점별 주요 키워드 빈도 비교 + 막대그래프
+# 서점별 주요 키워드 비율 비교 + 막대그래프
 def compare_korean_keywords_barplot(csv_paths, top_n=15):
     keyword_freqs = {}
 
@@ -55,26 +55,30 @@ def compare_korean_keywords_barplot(csv_paths, top_n=15):
         keywords = vectorizer.get_feature_names_out()
         frequencies = X.toarray().sum(axis=0)
 
+        total_tokens = frequencies.sum()  # 전체 키워드 수 기준
+        frequencies_ratio = (frequencies / total_tokens) * 100
+
         site_name = os.path.basename(path).replace('reviews_', '').replace('.csv', '').capitalize()
-        freq_df = pd.DataFrame({'keyword': keywords, site_name: frequencies})
+        freq_df = pd.DataFrame({'keyword': keywords, site_name: frequencies_ratio})
         freq_df.set_index('keyword', inplace=True)
         keyword_freqs[site_name] = freq_df
 
     # 공통 키워드 기준 병합
-    merged = pd.concat(keyword_freqs.values(), axis=1).fillna(0).astype(int)
+    merged = pd.concat(keyword_freqs.values(), axis=1).fillna(0)
     merged = merged.sort_values(by=merged.columns[0], ascending=False).head(top_n)
 
     # 막대그래프 시각화
     merged.plot(kind='bar', figsize=(14, 7), color=['skyblue', 'lightgreen', 'salmon'])
-    plt.title(f'서점별 주요 키워드 빈도 비교 (명사 기준 Top {top_n})')
+    plt.title(f'서점별 주요 키워드 비율 비교 (명사 기준 Top {top_n})')
     plt.xlabel('키워드')
-    plt.ylabel('빈도수')
+    plt.ylabel('비율 (%)')
     plt.xticks(rotation=45)
     plt.legend(title='서점')
     plt.tight_layout()
     plt.show()
 
     return merged
+
 
 # ----------------------------
 # 실행 예시
