@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 from utils.logger import setup_logger
+from review_analysis.crawling.base_crawler import BaseCrawler
 
 class AladinCrawler(BaseCrawler):
     """
@@ -14,9 +15,9 @@ class AladinCrawler(BaseCrawler):
     def __init__(self, output_dir: str):
         self.output_dir = output_dir
         self.logger = setup_logger('aladin_crawler.log')
-        self.reviews = []
-        self.ratings = []
-        self.dates = []
+        self.reviews: list[str] = []
+        self.ratings: list[float] = []
+        self.dates: list[str] = [] 
         self.url = "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=40869703&start=slayer#K662930932_CommentReview"
 
     def start_browser(self):
