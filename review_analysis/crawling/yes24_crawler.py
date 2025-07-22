@@ -104,6 +104,6 @@ class Yes24Crawler(BaseCrawler):
         os.makedirs(self.output_dir, exist_ok=True)
         with open(self.output_path, 'w', newline='', encoding='utf-8-sig') as f:
             writer = csv.writer(f)
-            writer.writerow(['Rating', 'Date', 'Content', 'Sympathy'])
+            writer.writerow(['rating', 'date', 'review', 'sympathy'])
             writer.writerows(self.reviews)
         self.logger.info(f"CSV 저장 완료: {self.output_path}")
