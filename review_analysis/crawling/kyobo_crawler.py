@@ -95,6 +95,9 @@ class KyoboCrawler(BaseCrawler):
                     
                     # rating
                     style = item.find_element(By.CLASS_NAME, "filled-stars").get_attribute("style")
+                    if style is None:
+                        self.logger.warning("스타일 속성 없음. 리뷰 건너뜀")
+                        continue
                     percent = int(style.split(":")[1].replace("%;", "").strip())
                     rating = round(percent / 25)
 

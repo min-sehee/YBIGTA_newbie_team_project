@@ -13,8 +13,8 @@ install("konlpy")
 install("pandas")
 install("scikit-learn", "sklearn")
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from konlpy.tag import Okt
+from sklearn.feature_extraction.text import TfidfVectorizer # type: ignore
+from konlpy.tag import Okt # type: ignore
 import pandas as pd
 import os
 import re
