@@ -33,3 +33,4 @@ class Yes24Crawler(BaseCrawler):
 class AladinCrawler(BaseCrawler):
     def __init__(self, output_dir: str):
         self.output_dir = output_dir
+        
