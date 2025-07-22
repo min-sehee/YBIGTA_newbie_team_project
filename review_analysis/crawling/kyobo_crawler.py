@@ -46,7 +46,7 @@ class KyoboCrawler(BaseCrawler):
             options=chrome_options
         )
 
-        self.logger.info("브라우저 실행 완료")
+        self.logger.info("교보문고 브라우저 실행 완료")
 
     def scrape_reviews(self) -> None:
         """
@@ -147,7 +147,7 @@ class KyoboCrawler(BaseCrawler):
         df = pd.DataFrame(self.reviews, columns=["review", "rating", "date"])
         df.to_csv(file_path, encoding="utf-8-sig", index=False)
 
-        self.logger.info(f"데이터 저장 완료: {file_path}")
+        self.logger.info(f"리뷰 데이터 {len(df)}건 저장 완료: {file_path}")
 
         self.driver.quit()
 

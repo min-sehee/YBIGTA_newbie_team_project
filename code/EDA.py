@@ -134,7 +134,9 @@ def visualize_outliers(input_data, rating_min=1, rating_max=5, reviewlen_short=1
     plt.show()
 
 # 실행
-review_eda('database/reviews_aladin.csv')
-visualize_outliers('database/reviews_aladin.csv')
-# review_eda('database/reviews_kyobo.csv')
+# review_eda('database/reviews_aladin.csv')
+# visualize_outliers('database/reviews_aladin.csv')
+review_eda('database/reviews_kyobo.csv')
+visualize_outliers('database/reviews_kyobo.csv')
 # review_eda('database/reviews_yes24.csv')
+# visualize_outliers('database/reviews_yes24.csv')
