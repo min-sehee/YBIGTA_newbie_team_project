@@ -17,3 +17,10 @@ starlette==0.41.3
 tomli==2.2.1
 typing_extensions==4.12.2
 uvicorn==0.34.0
+pandas
+pandas-stubs
+selenium
+beautifulsoup4
+webdriver-manager
+pytest
+httpx
