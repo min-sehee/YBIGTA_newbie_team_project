@@ -30,13 +30,13 @@
 ![Review and Merged](github/review_and_merged.png)
 
 ### 🛠️ 코드 실행 방법
+- 터미널 또는 Powershell 열기
 - `cd {YBIGTA_newbie_team_project 루트폴더}`로 경로 설정
 - `pip install -r requirements.txt` 명령어를 통해 필요한 패키지 설치
-#### web
-- `pytest test/test_user_service.py` 실행
-- `pytest test/test_user_router.py` 실행
-- `mypy test/test_user_service.py` 실행
-- `mypy test/test_user_router.py` 실행
+#### WEB
+- `uvicorn app.main:app --reload`로 FastAPI 서버 실행
+- 브라우저(크롬 등)의 주소 창에 http://127.0.0.1:8000 입력
+- 등록, 로그인, 삭제 등 여러 기능 테스트 가능!
 #### 크롤링
 - `python -m review_analysis.crawling.main -o database --all`로 크롤링 실행
 #### EDA/FE
