@@ -1,6 +1,6 @@
 # 📚 YBIGTA 신입 8조 : 소설 '소년이 온다' 리뷰 분석 프로젝트
 
-안녕하세요, 저희는 YBIGTA 교육세션 팀플과제팀 8조 **TMI(Team of Mixed Interests)**입니다!
+안녕하세요, 저희는 YBIGTA 교육세션 팀플과제팀 8조 **TMI(Team of Mixed Interests)** 입니다!
 
 ## 🔹 Git 과제
 ### 📂 팀 및 팀원 소개
