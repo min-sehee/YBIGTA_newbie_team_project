@@ -1,6 +1,11 @@
+from abc import ABC, abstractmethod
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -30,7 +35,11 @@ class AladinCrawler(BaseCrawler):
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
-        self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=chrome_options
+        )
+
         self.driver.get(self.url)
         time.sleep(2)
         # "전체" 탭 클릭 (id="tabTotal")
