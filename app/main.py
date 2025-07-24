@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import uvicorn
 import os
 
@@ -9,6 +10,12 @@ from app.config import PORT
 app = FastAPI()
 static_path = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+# 루트 URL에서 index.html 반환 코드 추가
+@app.get("/")
+async def root():
+    index_file = os.path.join(static_path, "index.html")
+    return FileResponse(index_file)
 
 app.include_router(user)
 
