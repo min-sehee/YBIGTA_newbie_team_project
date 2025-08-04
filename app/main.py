@@ -17,6 +17,11 @@ class CustomJSONResponse(JSONResponse):
 # 여기서 적용
 app = FastAPI(default_response_class=CustomJSONResponse)
 
+# DB 테이블 자동 생성
+from database.mysql_connection import engine
+from app.user.user_repository import Base
+Base.metadata.create_all(bind=engine)
+
 static_path = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=static_path), name="static")
 
