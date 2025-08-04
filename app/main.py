@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.encoders import jsonable_encoder
+from fastapi.responses import FileResponse
 import uvicorn
 import os
 
@@ -9,13 +8,8 @@ from app.user.user_router import user
 from app.review.review_router import review
 from app.config import PORT
 
-# 한글 깨짐 방지용 커스텀 JSON 응답 클래스
-class CustomJSONResponse(JSONResponse):
-    def render(self, content: any) -> bytes:
-        return super().render(jsonable_encoder(content, ensure_ascii=False))
-
-# 여기서 적용
-app = FastAPI(default_response_class=CustomJSONResponse)
+# 기본 FastAPI 앱 생성(커스텀 JSON 응답 클래스 사용하지 않음)
+app = FastAPI()
 
 # DB 테이블 자동 생성
 from database.mysql_connection import engine
