@@ -30,13 +30,7 @@ jobs:
 
     steps:
       - name: Create private key file
-        run: |
-          echo "${{ secrets.EC2_KEY }}" | base64 -d > key.pem
-          chmod 400 key.pem
-
-      - name: Copy .env to EC2
-        run: |
-          scp -o StrictHostKeyChecking=no -i key.pem .env ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/app.env
+        run: echo "${{ secrets.EC2_KEY }}" | base64 -d > key.pem && chmod 400 key.pem
 
       - name: Deploy to EC2 via SSH
         run: |
@@ -44,5 +38,5 @@ jobs:
             docker pull ${{ secrets.DOCKER_REPO }}
             docker stop app || true
             docker rm app || true
-            docker run -d --name app -p 80:8000 --env-file app.env ${{ secrets.DOCKER_REPO }}
+            docker run -d --name app -p 80:8000 ${{ secrets.DOCKER_REPO }}
           EOF
