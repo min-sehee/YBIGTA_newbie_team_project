@@ -189,3 +189,7 @@
 - 모든 플랫폼에서 '작가', '한강', '역사'는 핵심 키워드
 - 감정 중심(알라딘), 정보 중심(교보), 감상 중심(YES24)의 리뷰 스타일 차이가 존재
 - 2024년을 기점으로 한 리뷰량 급증은 한강 작가의 노벨문학상 수상과 관련된 흐름일 가능성이 높음
+### [8회차 과제] DB, Docker, AWS
+Docker hub 주소 : docker.io/0615sehee/ybigta-fastapi:latest
+### Github Action
+![Github Action](aws/github_action.png)
