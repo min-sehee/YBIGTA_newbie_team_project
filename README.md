@@ -191,5 +191,18 @@
 - 2024년을 기점으로 한 리뷰량 급증은 한강 작가의 노벨문학상 수상과 관련된 흐름일 가능성이 높음
 ### [8회차 과제] DB, Docker, AWS
 Docker hub 주소 : docker.io/0615sehee/ybigta-fastapi:latest
+
+### Register
+![Register](aws/register.png)
+### Login
+![Login](aws/login.png)
+### Update-password
+![Update-password](aws/update-password.png)
+### Delete
+![Delete](aws/delete.png)
+### Preprocess
+![Preprocess](aws/preprocess.png)
+
+
 ### Github Action
 ![Github Action](aws/github_action.png)
