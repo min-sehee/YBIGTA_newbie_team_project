@@ -24,3 +24,8 @@ beautifulsoup4
 webdriver-manager
 pytest
 httpx
+sqlalchemy
+pymysql 
+python-dotenv
+pymongo==3.11.0
+certifi
