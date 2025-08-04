@@ -13,7 +13,7 @@ def login_user(user_login: UserLogin, service: UserService = Depends(get_user_se
         user = service.login(user_login)
         return BaseResponse(status="success", data=user, message="Login Success.") 
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail={"message": str(e)})
 
 
 @user.post("/register", response_model=BaseResponse[User], status_code=status.HTTP_201_CREATED)
@@ -36,7 +36,7 @@ def register_user(user: User, service: UserService = Depends(get_user_service)) 
         new_user = service.register_user(user)
         return BaseResponse(status="success", data=new_user, message="User registeration success.")
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail={"message": str(e)})
 
 
 @user.delete("/delete", response_model=BaseResponse[User], status_code=status.HTTP_200_OK)
@@ -59,7 +59,7 @@ def delete_user(user_delete_request: UserDeleteRequest, service: UserService = D
         deleted_user = service.delete_user(user_delete_request.email)
         return BaseResponse(status="success", data=deleted_user, message="User Deletion Success.")
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail={"message": str(e)})
 
 
 @user.put("/update-password", response_model=BaseResponse[User], status_code=status.HTTP_200_OK)
@@ -82,4 +82,4 @@ def update_user_password(user_update: UserUpdate, service: UserService = Depends
         updated_user = service.update_user_pwd(user_update)
         return BaseResponse(status="success", data=updated_user, message="User password update success.")
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail={"message": str(e)})
