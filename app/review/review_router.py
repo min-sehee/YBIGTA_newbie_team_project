@@ -34,7 +34,15 @@ def preprocess_reviews(site_name: str):
     temp_input_path = f"temp_raw_{site_name}.csv"
     df.to_csv(temp_input_path, index=False)
 
-    processor = KyoboProcessor(input_path=temp_input_path, output_path="output")
+    if site_name == "kyobo":
+        processor = KyoboProcessor(input_path=temp_input_path, output_path="output")
+    elif site_name == "yes24":
+        processor = Yes24Processor(input_path=temp_input_path, output_path="output")
+    elif site_name == "aladin":
+        processor = AladinProcessor(input_path=temp_input_path, output_path="output")
+    else:
+        return BaseResponse(status="fail", data=None, message=f"Unsupported site: {site_name}")
+    
     processor.preprocess()
     processor.feature_engineering()
     print("전처리 후 DF shape:", processor.df.shape)
