@@ -1,5 +1,6 @@
 from st_app.rag.llm import get_llm
 from st_app.rag.retriever import load_faiss_retriever
+from st_app.rag.prompt import rag_prompt
 from st_app.utils.state import ChatState
 from st_app.rag.prompt import rag_prompt
 from langchain.chains import RetrievalQA
@@ -8,7 +9,6 @@ from langchain.chains import RetrievalQA
 llm = get_llm()
 retriever = load_faiss_retriever()
 
-# QA 체인 구성
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=retriever,
@@ -16,7 +16,6 @@ qa_chain = RetrievalQA.from_chain_type(
     chain_type_kwargs={"prompt": rag_prompt},
     input_key="question"
 )
-
 def rag_review_node(state: ChatState) -> ChatState:
     query = state.user_input
 
@@ -40,4 +39,5 @@ def rag_review_node(state: ChatState) -> ChatState:
         "chat_history": updated_history,
         "retreived_chunks": chunks,
         "rag_response": answer
+
     })
