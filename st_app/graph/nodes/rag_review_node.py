@@ -1,6 +1,7 @@
 from st_app.rag.llm import get_llm
 from st_app.rag.retriever import load_faiss_retriever
 from st_app.utils.state import ChatState
+from st_app.rag.prompt import rag_prompt
 from langchain.chains import RetrievalQA
 
 # LLM과 retriever 초기화
@@ -11,14 +12,16 @@ retriever = load_faiss_retriever()
 qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=retriever,
-    return_source_documents=True
+    return_source_documents=True,
+    chain_type_kwargs={"prompt": rag_prompt},
+    input_key="question"
 )
 
 def rag_review_node(state: ChatState) -> ChatState:
     query = state.user_input
 
     # 체인 실행
-    result = qa_chain({"query": query})
+    result = qa_chain.invoke({"question": query})
     answer = result["result"]
     source_docs = result["source_documents"]
 

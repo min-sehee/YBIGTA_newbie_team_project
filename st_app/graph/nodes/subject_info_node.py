@@ -49,7 +49,7 @@ def subject_info_node(state: ChatState) -> ChatState:
         book_info=book_info
     )
 
-    response = llm(prompt).content
+    response = llm.invoke(prompt).content
 
     updated_history = state.chat_history + [
         f"User: {query}",

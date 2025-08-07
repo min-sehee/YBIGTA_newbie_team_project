@@ -41,7 +41,7 @@ def build_faiss_index(save_path="st_app/db/faiss_index"):
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = splitter.split_documents(documents)
 
-    embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    embedding = HuggingFaceEmbeddings(model_name="jhgan/ko-sbert-nli")
     vectordb = FAISS.from_documents(chunks, embedding)
     vectordb.save_local(save_path)
 
