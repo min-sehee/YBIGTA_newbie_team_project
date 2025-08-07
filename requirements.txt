@@ -29,3 +29,10 @@ pymysql
 python-dotenv
 pymongo==3.11.0
 certifi
+faiss-cpu
+sentence-transformers
+langchain
+langchain-community
+google-generativeai
+langchain-google-genai
+
