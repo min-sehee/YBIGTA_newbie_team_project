@@ -189,7 +189,40 @@
 - 모든 플랫폼에서 '작가', '한강', '역사'는 핵심 키워드
 - 감정 중심(알라딘), 정보 중심(교보), 감상 중심(YES24)의 리뷰 스타일 차이가 존재
 - 2024년을 기점으로 한 리뷰량 급증은 한강 작가의 노벨문학상 수상과 관련된 흐름일 가능성이 높음
-### [8회차 과제] DB, Docker, AWS
-Docker hub 주소 : docker.io/0615sehee/ybigta-fastapi:latest
-### Github Action
+
+# 💻 [8회차 과제] DB, Docker, AWS
+
+## 🏠 Docker Hub 주소
+https://hub.docker.com/r/0615sehee/ybigta-fastapi
+
+## 📝 API 실행 결과
+### Register
+![Register](aws/register.png)
+### Login
+![Login](aws/login.png)
+### Update-password
+![Update-password](aws/update-password.png)
+### Delete
+![Delete](aws/delete.png)
+### Preprocess
+![Preprocess](aws/preprocess.png)
+
+## ⚙️ Github Action
 ![Github Action](aws/github_action.png)
+
+## 🔒 [멋져요!] 기준1 : VPC를 활용한 RDS 보안 설정
+AWS 환경에서 RDS(MySQL)를 구축하면서 아래와 같은 방식으로 보안 설정을 적용하였습니다.
+
+### 퍼블릭 액세스 비허용
+- RDS 인스턴스 생성 시 퍼블릭 액세스를 '아니오'로 설정해 외부에서 직접 접속이 불가능하도록 구성하였습니다.
+- 이는 외부로부터의 불필요한 접근 시도를 차단함으로써 보안 취약점을 최소화하기 위함입니다.
+
+### VPC 및 보안 그룹 설정
+- 해당 RDS는 EC2 인스턴스와 동일한 VPC 내에 배치되어 있으며, 두 인스턴스가 같은 서브넷 또는 피어링된 서브넷을 통해 통신합니다.
+- 보안 그룹 설정을 통해 EC2 인스턴스에서 RDS로의 MySQL(3306 포트) 접근만 허용하고, 외부 IP로부터의 접근은 전면 차단했습니다.
+
+### 설정화면 예시
+#### RDS DB 인스턴스 요약 화면 (퍼블릭 엑세스 여부 및 VPC 정보)
+![RDS Public Access Setting](aws/rds_instance.png)
+#### RDS 보안그룹 인바운드 규칙 (EC2 인스턴스에서만 접근 허용)
+![Security Group Inbound Rules](aws/rds_securitygrp_inbound.png)
