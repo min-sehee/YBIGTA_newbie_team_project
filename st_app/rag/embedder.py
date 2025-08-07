@@ -7,7 +7,7 @@ from langchain.vectorstores import FAISS
 import pandas as pd
 import os
 
-def build_faiss_index(csv_paths, save_path):
+def build_faiss_index(csv_paths, save_path="st_app/db/faiss_index"):
     # CSV 불러오기 및 합치기
     # 로컬에 클론한 GitHub 경로
     BASE_PATH = "YBIGTA_newbie_team_project/database"
@@ -44,3 +44,4 @@ def build_faiss_index(csv_paths, save_path):
     embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectordb = FAISS.from_documents(chunks, embedding)
     vectordb.save_local(save_path)
+
