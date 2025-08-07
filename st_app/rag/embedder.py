@@ -43,7 +43,8 @@ def build_faiss_index(save_path="st_app/db/faiss_index"):
 
     embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectordb = FAISS.from_documents(chunks, embedding)
-    vectordb.save_local(save_path)
+    vectordb.save_local(save_path, prefer_json=True)
+
 
 if __name__ == "__main__":
     build_faiss_index()
