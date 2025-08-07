@@ -21,7 +21,9 @@ def routing_llm(state: ChatState) -> str:
 
     다음 중 하나의 키워드만 출력하세요: chat, subject, review
     """
-    decision = get_llm(routing_prompt).strip().lower()
+    llm = get_llm()  
+    decision = llm.invoke(routing_prompt).content.strip().lower()
+
     
     if decision not in ["chat", "subject", "review"]:
         return "chat_node" # fallback

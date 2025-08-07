@@ -2,15 +2,15 @@ import pandas as pd
 import re
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
 import pandas as pd
 import os
 
-def build_faiss_index(csv_paths, save_path="st_app/db/faiss_index"):
+def build_faiss_index(save_path="st_app/db/faiss_index"):
     # CSV 불러오기 및 합치기
     # 로컬에 클론한 GitHub 경로
-    BASE_PATH = "YBIGTA_newbie_team_project/database"
+    BASE_PATH = "database"
 
     # 각 파일 경로
     aladin_csv = os.path.join(BASE_PATH, "preprocessed_reviews_aladin.csv")
@@ -45,3 +45,6 @@ def build_faiss_index(csv_paths, save_path="st_app/db/faiss_index"):
     vectordb = FAISS.from_documents(chunks, embedding)
     vectordb.save_local(save_path)
 
+if __name__ == "__main__":
+    build_faiss_index()
+    print("✅ FAISS 인덱스 저장 완료: st_app/db/faiss_index/")
