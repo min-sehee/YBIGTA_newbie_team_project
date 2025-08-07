@@ -29,8 +29,8 @@ if user_input:
     next_state = graph_executor.invoke(state)
 
     # 세션 상태 업데이트
-    st.session_state.chat_history = next_state.chat_history
-    st.session_state.selected_subject = next_state.selected_subject
+    st.session_state.chat_history = next_state['chat_history'] # <--- 수정
+    st.session_state.selected_subject = next_state['selected_subject'] # <--- 수정
 
     # 출력
     st.markdown("### 💬 대화 기록")

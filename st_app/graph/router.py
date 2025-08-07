@@ -1,4 +1,4 @@
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, END
 from st_app.utils.state import ChatState
 from st_app.graph.nodes.chat_node import chat_node
 from st_app.graph.nodes.subject_info_node import subject_info_node
@@ -41,15 +41,21 @@ def build_langgraph():
     builder.add_node("subject_info_node", subject_info_node)
     builder.add_node("rag_review_node", rag_review_node)
         
-    builder.set_entry_point("chat_node")
+    # 1. 라우터를 진입점으로 설정합니다.
+    #    그래프가 시작되면 먼저 routing_llm을 호출하여 어디로 갈지 결정합니다.
+    builder.set_conditional_entry_point(
+        routing_llm,
+        {
+            "chat_node": "chat_node",
+            "subject_info_node": "subject_info_node",
+            "rag_review_node": "rag_review_node"
+        }
+    )
         
-    builder.add_conditional_edges("chat_node", routing_llm, {
-        "chat_node": "chat_node",
-        "subject_info_node": "subject_info_node",
-        "rag_review_node": "rag_review_node"
-    })
-        
-    builder.add_edge("subject_info_node", "chat_node")
-    builder.add_edge("rag_review_node", "chat_node")
+    # 2. 각 노드가 작업을 마치면, END로 연결하여 그래프를 종료합니다.
+    #    이렇게 하면 무한 루프에 빠지지 않습니다.
+    builder.add_edge("chat_node", END)
+    builder.add_edge("subject_info_node", END)
+    builder.add_edge("rag_review_node", END)
         
     return builder.compile()
