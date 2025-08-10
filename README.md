@@ -226,3 +226,58 @@ AWS 환경에서 RDS(MySQL)를 구축하면서 아래와 같은 방식으로 보
 ![RDS Public Access Setting](aws/rds_instance.png)
 #### RDS 보안그룹 인바운드 규칙 (EC2 인스턴스에서만 접근 허용)
 ![Security Group Inbound Rules](aws/rds_securitygrp_inbound.png)
+
+# 🗝️ RAG, Agent 과제
+
+## ☁️ streamlit cloud 주소 및 작동 화면
+https://review-chatbot.streamlit.app/
+
+## 📖 state class 구현 방식
+
+이 프로젝트의 `state` 클래스(`ChatState`)는 대화 흐름에서 공유되는 모든 상태 정보를 하나의 데이터 모델로 관리하기 위해 Pydantic `BaseModel`을 기반으로 구현되었습니다.
+
+### 특징
+- **Pydantic 사용**  
+  - `BaseModel` 상속으로 필드 타입과 기본값을 명확히 정의  
+  - 타입 검증과 직렬화/역직렬화를 자동 처리하여 노드 간 상태 전달 시 안정성 확보
+- **대화 상태 통합 관리**  
+  - 사용자 입력(`user_input`), 대화 히스토리(`chat_history`), RAG 검색 결과(`retrieved_chunks`), 생성된 응답(`rag_response`) 등 대화 관련 정보를 단일 객체에서 관리
+- **옵션 필드 설계**  
+  - `selected_subject`, `retrieved_chunks`, `rag_response` 등은 `Optional`로 선언하여, 아직 결정되지 않은 단계에서도 유효한 상태 유지
+- **기본값 지정**  
+  - 리스트 필드(`chat_history`)는 빈 리스트로 초기화하여 Null 체크 없이 바로 사용 가능
+- **확장 가능성 고려**  
+  - `next_node` 필드를 포함하여 조건부 라우팅에 활용 가능  
+  - 새로운 필드를 손쉽게 추가해 기능 확장 가능
+
+### 필드 요약
+
+| 필드명             | 타입                  | 설명                        |
+| ------------------ | --------------------- | --------------------------- |
+| `user_input`       | `str`                 | 현재 사용자 입력            |
+| `chat_history`     | `List[str]`           | 누적 대화 기록              |
+| `selected_subject` | `Optional[str]`       | 선택된 주제/제품            |
+| `retrieved_chunks` | `Optional[List[str]]` | RAG 검색 결과 조각          |
+| `rag_response`     | `Optional[str]`       | 최종 생성 응답              |
+| `subject_info`     | `Optional[str]`       | 주제/제품 메타정보          |
+| `next_node`        | `Optional[str]`       | 조건부 라우팅용 다음 노드명 |
+
+작동 방식: 각 노드는 `ChatState`를 입력받아 필요한 필드만 갱신 후 반환하며, `chat_history`는 누적만 수행합니다. 즉, `ChatState`는 대화 진행 상황을 안전하고 일관되게 유지하는 중심 데이터 구조입니다.
+
+## ✅ 조건부 라우팅 구현 방식
+
+이 프로젝트에서는 LangGraph의 `set_conditional_entry_point`를 사용하여 LLM 기반 조건부 라우팅을 구현했습니다. 그래프 시작 시 `routing_llm`이 실행되어 사용자의 입력과 대화 이력을 바탕으로 최초 실행 노드를 결정합니다.
+
+### 동작 흐름
+1. **그래프 시작** → `routing_llm` 실행
+2. **LLM 의도 판별** (`chat`, `subject`, `review` 중 하나)
+3. **매핑에 따라 최초 실행 노드 선택**
+   - `chat` 또는 알 수 없는 값 → `chat_node`
+   - `subject` → `subject_info_node`
+   - `review` → `rag_review_node`
+4. **선택된 노드 실행 후 `END`로 종료**
+
+### 가드레일
+- LLM 출력은 `strip().lower()`로 정규화
+- 허용된 값 외의 출력은 무조건 `chat_node`로 풀백
+- 테스트 시 chat/subject/review 예시 프롬프트를 고정해 의도별 분기 검증
